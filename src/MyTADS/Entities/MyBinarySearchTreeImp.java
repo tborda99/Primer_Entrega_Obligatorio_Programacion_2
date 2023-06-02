@@ -1,6 +1,9 @@
 package MyTADS.Entities;
 
+import MyTADS.Exceptions.EmptyQueueException;
+import MyTADS.Exceptions.EmptyTreeException;
 import MyTADS.Interfaces.MyBinarySearchTree;
+import MyTADS.Interfaces.MyQueue;
 
 public class MyBinarySearchTreeImp <K extends Comparable<K>, T> implements MyBinarySearchTree<K, T>{
 
@@ -19,17 +22,19 @@ public class MyBinarySearchTreeImp <K extends Comparable<K>, T> implements MyBin
     //METHODS
     @Override
     public T find(K key) {
-        if(this.root!= null){
-            if((this.root.getKey()).equals(key)){
+        if (this.root != null) {
+            if (this.root.getKey().equals(key)) {
                 return this.root.getData();
-            }else{
-                return(busquedaRecursiva(this.root,key).getData());
+            } else {
+                NodeBST<K, T> node = busquedaRecursiva(this.root, key);
+                if (node != null) {
+                    return node.getData();
+                }
             }
-        }else{
-            return null;
         }
-
+        return null;
     }
+
 
     @Override
     public void insert(K key, T data) {
@@ -44,35 +49,72 @@ public class MyBinarySearchTreeImp <K extends Comparable<K>, T> implements MyBin
     }
 
     @Override
-    public void delete(K key, T data) {
-        if(this.root!= null){
-            if((this.root.getKey()).equals(key)){
-                this.root = null;
-            }else{
+    public void delete(K key, T data) throws EmptyTreeException {
+        try {
+            if (this.root != null) {
+                if ((this.root.getKey()).equals(key)) {
+                    this.root = null;
+                } else {
 
-                NodeBST<K,T> eliminar = busquedaRecursiva(this.root,key);
-                NodeBST<K,T> padre = busquedaRecursivaPadre(this.root,key, null);
-                if (eliminar.getLeftChild()==null && eliminar.getRightChild() == null){
-                    //Si el que voy a eliminar no tiene hijos, lo elimino nomas
-                    if(padre.getRightChild().equals(eliminar)){
-                        padre.setRightChild(null);
+                    NodeBST<K, T> eliminar = busquedaRecursiva(this.root, key);
+                    NodeBST<K, T> padre = busquedaRecursivaPadre(this.root, key, null);
+                    if(eliminar != null){
+                        if (eliminar.getLeftChild() == null && eliminar.getRightChild() == null) {
+                            //Si el que voy a eliminar no tiene hijos, lo elimino nomas
+                            if (padre.getRightChild()!= null && padre.getRightChild().equals(eliminar)) {
+                                padre.setRightChild(null);
+                            } else {
+                                padre.setLeftChild(null);
+                            }
+                        } else if (eliminar.getLeftChild() == null && eliminar.getRightChild() != null) {
+                            //Caso con solo hijo derecho
+                            if (padre.getRightChild()!= null && padre.getRightChild().equals(eliminar)) {
+                                padre.setRightChild(eliminar.getRightChild());
+                            } else {
+                                padre.setLeftChild(eliminar.getRightChild());
+                            }
+
+                        } else if (eliminar.getLeftChild() != null && eliminar.getRightChild() == null) {
+                            //Caso con solo hijo izquierdo
+                            if (padre.getRightChild()!= null && padre.getRightChild().equals(eliminar)) {
+                                padre.setRightChild(eliminar.getRightChild());
+                            } else {
+                                padre.setLeftChild(eliminar.getRightChild());
+                            }
+
+                        } else {
+                            //Caso con dos hijos
+                            MyQueue<NodeBST> queue = new MyLinkedListImp<>();
+                            queue = inOrder(eliminar, queue);
+
+                            //Borro el que quiero eliminar, setteando el hijo de su padre a null.
+                            if (padre.getRightChild()!=null && padre.getRightChild().equals(eliminar)) {
+                                padre.setRightChild(null);
+                            } else {
+                                padre.setLeftChild(null);
+                            }
+                            //Y lo saco de la queue
+                            eliminar = queue.dequeue();
+
+                            //Recorro la queue insertando
+                            for (int i = 0; i < queue.size(); i++) {
+                                NodeBST<K,T> nuevo = new NodeBST<>();
+                                nuevo = queue.dequeue();
+                                insertRecursivo(padre,nuevo);
+
+                            }
+                        }
                     }else{
-                        padre.setLeftChild(null);
+                        throw new EmptyTreeException();
                     }
-                } else if (eliminar.getLeftChild()== null && eliminar.getRightChild() != null) {
-                    //TODO: Caso con solo hijo derecho
 
-                }else if (eliminar.getLeftChild() != null && eliminar.getRightChild() == null){
-                    //TODO: Caso con solo hijo izquierdo
-
-                }else{
-                    //TODO: Caso con dos hijos
                 }
+            } else {
+                throw new EmptyTreeException();
             }
-        }else{
-
+        }catch (EmptyQueueException e){
+            System.out.println("Dequeue Problem: Queue vacia");
         }
-
     }
 
     //METHODS AUXILIARES
@@ -109,7 +151,6 @@ public class MyBinarySearchTreeImp <K extends Comparable<K>, T> implements MyBin
 
         } else {
             //Si no es mayor ni menor es que estoy en el que busco
-            //TODO: Ver si hay que devolver los datos o el nodo entero.
             return actual;
 
         }
@@ -139,16 +180,33 @@ public class MyBinarySearchTreeImp <K extends Comparable<K>, T> implements MyBin
     }
 
 
-    public MyLinkedListImp<T> inOrder(){
-        return null;
+    public MyQueue<NodeBST> inOrder(NodeBST<K,T> nodo, MyQueue<NodeBST> queue){
+
+        if (nodo != null) {
+            inOrder(nodo.getLeftChild(),queue);
+            queue.enqueue(nodo);
+            inOrder(nodo.getRightChild(),queue);
+        }
+        return queue;
     }
 
-    public MyLinkedListImp<T> preOrder(){
-        return null;
+    public MyQueue<NodeBST> preOrder(NodeBST<K, T> nodo, MyQueue<NodeBST> queue){
+
+        if (nodo != null) {
+            queue.enqueue(nodo);
+            preOrder(nodo.getLeftChild(),queue);
+            preOrder(nodo.getRightChild(),queue);
+        }
+        return queue;
     }
 
-    public MyLinkedListImp<T> postOrder(){
-        return null;
+    public MyQueue<NodeBST> postOrder(NodeBST<K,T> nodo, MyQueue<NodeBST> queue){
+        if (nodo != null) {
+            postOrder(nodo.getLeftChild(),queue);
+            postOrder(nodo.getRightChild(),queue);
+            queue.enqueue(nodo);
+        }
+        return queue;
     }
 
     //GETTER & SETTERS
@@ -159,5 +217,7 @@ public class MyBinarySearchTreeImp <K extends Comparable<K>, T> implements MyBin
     public void setRoot(NodeBST<K, T> root) {
         this.root = root;
     }
+
+
 }
 
