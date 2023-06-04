@@ -1,5 +1,7 @@
 package MyTADS.Entities;
 
+import MyTADS.Exceptions.EmptyTreeException;
+import MyTADS.Exceptions.FullHeapException;
 import MyTADS.Interfaces.MyHeap;
 
 public class MyHeapImp<T extends Comparable<T>> implements MyHeap<T> {
@@ -8,26 +10,161 @@ public class MyHeapImp<T extends Comparable<T>> implements MyHeap<T> {
     private static final int CAPACIDAD_INICIAL = 10; //size máximo inicial
     private T[] array;
     private int size; //size actual
+    private boolean max; //True is es maximo, False si Minimo
 
     //CONSTRUCTOR
-    public MyHeapImp() {
-        array = (T[]) new Comparable[CAPACIDAD_INICIAL];
-        size = 0;
+    public MyHeapImp(boolean max) {
+        this.array = (T[]) new Comparable[CAPACIDAD_INICIAL];
+        this.size = 0;
+        this.max = max;
     }
 
     //Los hijos de i estan en 2i+1 y 2i+2
     //El padre de i esta en (i-2)/2
 
     //METHODS
-    @Override
-    public void agregar(T elemento) {
 
+    /**
+     * Este metodo agrega un nuevo elemento al Heap
+     *
+     * @param elemento el elemento a agregar. Acepta Generics
+     */
+    @Override
+    public void agregar(T elemento) throws FullHeapException {
+        if (elemento != null) {
+            if (this.size < array.length && this.size != 0) {
+                // Tengo lugar para agregar
+                array[size] = elemento; // Lo agrego al final del arreglo
+                int i = size;
+                this.size++; // Aumento el size
+
+                if (this.max) {
+                    // Es un árbol máximo
+
+                    // Lo ordeno hasta llegar a que el padre sea más grande que el elemento o que sea la raíz.
+                    // El padre de i está en (i-1)/2
+                    while (i > 0 && array[(i - 1) / 2].compareTo(elemento) < 0) {
+                        // Intercambio padre con el elemento
+                        array[i] = array[(i - 1) / 2];
+                        array[(i - 1) / 2] = elemento;
+                        i = (i - 1) / 2;
+                    }
+                } else {
+                    // Es un árbol mínimo
+
+                    // Lo ordeno hasta llegar a que el padre sea más pequeño que el elemento o que sea la raíz.
+                    // El padre de i está en (i-1)/2
+                    while (i > 0 && array[(i - 1) / 2].compareTo(elemento) > 0) {
+                        // Intercambio padre con el elemento
+                        array[i] = array[(i - 1) / 2];
+                        array[(i - 1) / 2] = elemento;
+                        i = (i - 1) / 2;
+                    }
+                }
+            } else if (this.size == 0) {
+                // El arreglo está vacío, agrego el elemento en la posición 0
+                array[0] = elemento;
+                size++;
+            } else {
+                throw new FullHeapException();
+            }
+        } else {
+            throw new IllegalArgumentException("El elemento no puede ser nulo");
+        }
     }
 
+    /**
+     * Este metodo obtiene el maximo o minimo del heap
+     * y reorganiza el heap
+     * @return el máximo o minimo dependiendo si el heap es max o min.
+     */
     @Override
-    public T obtenerYEliminar() {
-        return null;
+    public T obtenerYEliminar() throws EmptyTreeException {
+        if (this.size == 0) {
+            // Caso de arbol vacio
+            throw new EmptyTreeException();
+        } else if (this.size == 1) {
+            // Caso de uno solo
+            T devolver = array[0];
+            this.array[0] = null;
+            size = 0;
+            return devolver;
+        } else {
+            // Caso común de varios
+            T devolver = array[0]; // Guardo en un variable el primero para devolverlo.
+            this.array[0] = array[size]; // Pongo el último primero
+            // Reordeno hasta que:
+            // Los hijos tienen todas las claves menores a las del nodo
+            // o el nodo es una hoja
+            if (this.max) {
+                // Caso Heap Max
+                int indice_actual = 0;
+                while (true) {
+                    int indice_hijo_izq = 2 * indice_actual + 1;
+                    int indice_hijo_der = 2 * indice_actual + 2;
+                    int indice_hijo_grande = indice_actual;
+
+                    // Comparo con el hijo izquierdo
+                    if (indice_hijo_izq < size && array[indice_hijo_izq] != null && array[indice_hijo_izq].compareTo(array[indice_hijo_grande]) > 0) {
+                        indice_hijo_grande = indice_hijo_izq;
+                    }
+
+                    // Comparo con el hijo derecho
+                    if (indice_hijo_der < size && array[indice_hijo_der] != null && array[indice_hijo_der].compareTo(array[indice_hijo_grande]) > 0) {
+                        indice_hijo_grande = indice_hijo_der;
+                    }
+
+                    if (indice_hijo_grande == indice_actual) {
+                        // El nodo actual es el más grande, entonces el heap está ordenado
+                        break;
+                    }
+
+                    // Cambio el nodo actual con el hijo más grande
+                    T temp = array[indice_actual];
+                    array[indice_actual] = array[indice_hijo_grande];
+                    array[indice_hijo_grande] = temp;
+
+                    // Me muevo un piso más abajo del árbol
+                    indice_actual = indice_hijo_grande;
+                }
+            } else {
+                // Caso Heap Min
+                int indice_actual = 0;
+                while (true) {
+                    int indice_hijo_izq = 2 * indice_actual + 1;
+                    int indice_hijo_der = 2 * indice_actual + 2;
+                    int indice_hijo_chico = indice_actual;
+
+                    // Comparo con el hijo izquierdo
+                    if (indice_hijo_izq < size && array[indice_hijo_izq] != null && array[indice_hijo_izq].compareTo(array[indice_hijo_chico]) < 0) {
+                        indice_hijo_chico = indice_hijo_izq;
+                    }
+
+                    // Comparo con el hijo derecho
+                    if (indice_hijo_der < size && array[indice_hijo_der] != null && array[indice_hijo_der].compareTo(array[indice_hijo_chico]) < 0) {
+                        indice_hijo_chico = indice_hijo_der;
+                    }
+
+                    if (indice_hijo_chico == indice_actual) {
+                        // El nodo actual es el menor, entonces ya está ordenado
+                        break;
+                    }
+
+                    // Cambio el nodo actual con el hijo menor
+                    T temp = array[indice_actual];
+                    array[indice_actual] = array[indice_hijo_chico];
+                    array[indice_hijo_chico] = temp;
+
+                    // Me muevo un piso más abajo del árbol
+                    indice_actual = indice_hijo_chico;
+                }
+            }
+
+            return devolver;
+        }
     }
+
+
 
     @Override
     public int obtenerTamaño() {
@@ -52,7 +189,7 @@ public class MyHeapImp<T extends Comparable<T>> implements MyHeap<T> {
     }
 
     public int getTamaño() {
-        return size;
+        return this.size;
     }
 
     private void setTamaño(int size) {
