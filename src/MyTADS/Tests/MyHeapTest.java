@@ -64,7 +64,7 @@ public class MyHeapTest {
         heap.agregar(8);
         heap.agregar(1);
 
-        Assert.assertEquals(Integer.valueOf(8), heap.obtenerYEliminar());
+        Assert.assertEquals(8, heap.obtenerYEliminar().intValue());
         Assert.assertEquals(3, heap.obtenerTamaño());
 
         }catch(FullHeapException e){
@@ -74,8 +74,27 @@ public class MyHeapTest {
             System.out.println("Problema con Arbol Vacio");
             fail();
         }
+    }
 
+    @Test
+    public void testObtenerYEliminar_MinHeap() {
+        MyHeapImp<Integer> heap = new MyHeapImp<>(false);
+        try {
+            heap.agregar(5);
+            heap.agregar(3);
+            heap.agregar(8);
+            heap.agregar(1);
 
+            Assert.assertEquals(1, heap.obtenerYEliminar().intValue());
+            Assert.assertEquals(3, heap.obtenerTamaño());
+
+        } catch (FullHeapException e) {
+            System.out.println("Problema con Heap Full");
+            fail();
+        } catch (EmptyTreeException e) {
+            System.out.println("Problema con Arbol Vacio");
+            fail();
+        }
     }
 
     @Test

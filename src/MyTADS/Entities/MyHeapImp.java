@@ -76,6 +76,7 @@ public class MyHeapImp<T extends Comparable<T>> implements MyHeap<T> {
     /**
      * Este metodo obtiene el maximo o minimo del heap
      * y reorganiza el heap
+     *
      * @return el máximo o minimo dependiendo si el heap es max o min.
      */
     @Override
@@ -92,7 +93,8 @@ public class MyHeapImp<T extends Comparable<T>> implements MyHeap<T> {
         } else {
             // Caso común de varios
             T devolver = array[0]; // Guardo en un variable el primero para devolverlo.
-            this.array[0] = array[size]; // Pongo el último primero
+            this.array[0] = array[size - 1];// Pongo el último primero
+            size--;
             // Reordeno hasta que:
             // Los hijos tienen todas las claves menores a las del nodo
             // o el nodo es una hoja
@@ -105,13 +107,17 @@ public class MyHeapImp<T extends Comparable<T>> implements MyHeap<T> {
                     int indice_hijo_grande = indice_actual;
 
                     // Comparo con el hijo izquierdo
-                    if (indice_hijo_izq < size && array[indice_hijo_izq] != null && array[indice_hijo_izq].compareTo(array[indice_hijo_grande]) > 0) {
-                        indice_hijo_grande = indice_hijo_izq;
+                    if (array[indice_hijo_izq] != null) {
+                        if (indice_hijo_izq < size && array[indice_hijo_izq].compareTo(array[indice_hijo_grande]) > 0) {
+                            indice_hijo_grande = indice_hijo_izq;
+                        }
                     }
 
                     // Comparo con el hijo derecho
-                    if (indice_hijo_der < size && array[indice_hijo_der] != null && array[indice_hijo_der].compareTo(array[indice_hijo_grande]) > 0) {
-                        indice_hijo_grande = indice_hijo_der;
+                    if (array[indice_hijo_der] != null) {
+                        if (indice_hijo_der < size && array[indice_hijo_der].compareTo(array[indice_hijo_grande]) > 0) {
+                            indice_hijo_grande = indice_hijo_der;
+                        }
                     }
 
                     if (indice_hijo_grande == indice_actual) {
@@ -165,18 +171,40 @@ public class MyHeapImp<T extends Comparable<T>> implements MyHeap<T> {
     }
 
 
-
     @Override
     public int obtenerTamaño() {
         //Delego al getter. Tamaño ya esta definido como variable local.
         return this.getTamaño();
     }
 
+    /**
+     * Este metodo muestra el arbol en salida estandar
+     * llama de manera recursiva a mostrarArbolRecusrivo()
+     *
+     */
     @Override
     public void mostrarArbol() {
-
+        mostrarArbolRecursivo(0, "");
     }
 
+    /**
+     * Este metodo muestra el arbol en salida estandar de manera recursiva
+     *
+     * @param indice indice desede donde se comienza a imprimir
+     * @param prefijo el prefijo que se usa en cada espacio y es pasado nuevamente a la funcion.
+     *                en la primer instancia tiene que ser un espacio vacio.
+     *
+     */
+    private void mostrarArbolRecursivo(int indice, String prefijo) {
+        if (indice < array.length && array[indice] != null) {
+            boolean esUltimo = indice == array.length - 1 || array[indice + 1] == null;
+            String espacios = prefijo + (esUltimo ? "   " : "│  ");
+
+            mostrarArbolRecursivo(indice * 2 + 2, espacios); // Recursivo para el hijo derecho
+            System.out.println(prefijo + (esUltimo ? "└──" : "├──") + array[indice]);
+            mostrarArbolRecursivo(indice * 2 + 1, espacios); // Recursivo para el hijo izquierdo
+        }
+    }
 
     //GETTERS & SETTERS
     //setters los pongo privados porque no quiero que de afuera me modifiquen esos valores.
