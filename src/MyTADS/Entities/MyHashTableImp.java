@@ -1,41 +1,75 @@
 package MyTADS.Entities;
 
-import MyTADS.Interfaces.HashTable;
+import MyTADS.Exceptions.ElementNotFoundException;
+import MyTADS.Interfaces.MyHashTable;
 
-public class MyHashTableImp implements HashTable {
+public class MyHashTableImp<K,V> implements MyHashTable<K,V> {
 
-    private boolean collisions_cuadratic; //True si colisiones se resuelven cuadraticas
-                                         //False si se resuelven lineal
+    private int size;
+    private MyLinkedListImp<NodeHash<K,V>>[] table;
 
-    //CONSTRUCTOR
-    public MyHashTableImp(boolean collisions_cuadratic) {
-        this.collisions_cuadratic = collisions_cuadratic;
+    //definicion del hash
+    private int hash(K key) {
+        return key%table.length();
     }
 
-    //METHODS
+    //array con linkedList
+    public MyHashTableImp(int size){
+        this.size = size;
+        table = new MyLinkedListImp<NodeHash<K, V>>[size];
+        for (int i=0; i<table.length(); i++){
+            table[i] = new MyLinkedListImp<>();
+        }
+    }
 
-
+    //metodos
     @Override
-    public void put(Object key, Object value) {
-
+    public void put(K key, V value) {
+        int index = hash(key);
+        MyLinkedListImp<NodeHash<K,V>> bucket = table[index]; //especifico el indice de hash que voy a usar
+        for (NodeHash<K,V> node: bucket) { //recorre todos los nodos del bucket
+            if (node.getKey() == key) { //deberia usar comparable aca??
+                node.setValue(value); //si encuentro uno con el mismo key le actualizo el valor
+                return;
+            }
+        }
+        bucket.add(new NodeHash<>(key,value));
     }
 
     @Override
-    public boolean contains(Object key) {
+    public boolean contains(K key) {
+        int index = hash(key);
+        MyLinkedListImp<NodeHash<K,V>> bucket = table[index];
+        for (NodeHash<K,V> node: bucket){
+            if (node.getKey().equals(key)){
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
-    public void remove(Object clave) {
-
+    public void remove(K key) throws ElementNotFoundException {
+        int index = hash(key);
+        MyLinkedListImp<NodeHash<K,V>> bucket = table[index];
+        for (NodeHash<K,V> node: bucket){
+            if (node.getKey().equals(key)){
+                node = null;
+                return;
+            }
+        }
+        throw new ElementNotFoundException();
     }
 
-    //GETTERS AND SETTERS
-    public boolean isCollisions_cuadratic() {
-        return collisions_cuadratic;
-    }
-
-    public void setCollisions_cuadratic(boolean collisions_cuadratic) {
-        this.collisions_cuadratic = collisions_cuadratic;
+    @Override
+    public V get(K key) throws ElementNotFoundException {
+        int index = hash(key);
+        MyLinkedListImp<NodeHash<K,V>> bucket = table[index];
+        for (NodeHash<K,V> node: bucket){
+            if (node.getKey().equals(key)){
+                return node.getValue();
+            }
+        }
+        throw new ElementNotFoundException();
     }
 }
