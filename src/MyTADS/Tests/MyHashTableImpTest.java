@@ -1,15 +1,15 @@
 package MyTADS.Tests;
 
-import MyTADS.Entities.MyHashTableImp2;
+import MyTADS.Entities.MyHashTableImp;
 import MyTADS.Exceptions.ElementNotFoundException;
 import MyTADS.Exceptions.OutOfBoundsException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MyHashTableImp2Test {
+class MyHashTableImpTest {
 
-    MyHashTableImp2<Integer, String> hashTable = new MyHashTableImp2<>(10);
+    MyHashTableImp<Integer, String> hashTable = new MyHashTableImp<>(10);
 
     @Test
     void put() {
