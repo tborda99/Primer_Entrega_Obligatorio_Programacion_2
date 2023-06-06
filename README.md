@@ -1,5 +1,5 @@
 # Primer Entrega Obligatorio Programacion II
-### Clara Ma Tai, Tomás Bordaberry 
+### Giao Giao Ma Tai, Tomás Bordaberry 
 
 Primer entrega para el proyecto obligatorio de programación II de la Univerisdad de Montevideo.
 La entregaa consiste en los TADS que se van a utilizar para el obligatorio.
