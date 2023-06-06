@@ -1,6 +1,6 @@
 package MyTADS.Entities;
 
-import MyTADS.Exceptions.InvalidInputException;
+
 import MyTADS.Exceptions.OutOfBoundsException;
 import MyTADS.Interfaces.MyList;
 

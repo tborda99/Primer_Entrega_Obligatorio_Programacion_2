@@ -1,6 +1,4 @@
 package MyTADS.Interfaces;
-
-import MyTADS.Exceptions.InvalidInputException;
 import MyTADS.Exceptions.OutOfBoundsException;
 
 public interface MyList<T> {

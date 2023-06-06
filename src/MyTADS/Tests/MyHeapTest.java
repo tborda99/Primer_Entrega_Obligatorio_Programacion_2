@@ -125,8 +125,11 @@ public class MyHeapTest {
             System.out.println("Problema con Heap Full");
             fail();
         }
-
-        heap.mostrarArbol();
+        try {
+            heap.mostrarArbol();
+        }catch(Exception e){
+            fail();
+        }
     }
 }
 
