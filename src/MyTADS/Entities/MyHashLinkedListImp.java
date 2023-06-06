@@ -36,7 +36,12 @@ public class MyHashLinkedListImp<K,V> implements MyList<NodeHash<K,V>> {
             if (first == null && last == null) {
                 first = node;
                 last = node;
+            } else if (first == last) {
+                //caso agregar a lista de un solo valor
+                last = node;
+                first.setNext(last);
             } else {
+                //caso agregar al final
                 last.setNext(node);
                 last = node;
             }
@@ -60,11 +65,13 @@ public class MyHashLinkedListImp<K,V> implements MyList<NodeHash<K,V>> {
 
     public NodeHash<K,V> getKey(K key){
         NodeHash<K,V> aux = first;
-        while (aux.getKey() != key && aux != null) {
-            aux = aux.getNext();
-        }
-        if (aux.getKey() == key) {
-            return aux;
+        if (aux != null) {
+            while (aux.getKey() != key && aux.getNext() != null) {
+                aux = aux.getNext();
+            }
+            if (aux.getKey() == key) {
+                return aux;
+            }
         }
         return null;
     }

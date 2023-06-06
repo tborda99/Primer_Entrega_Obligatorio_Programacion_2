@@ -30,10 +30,10 @@ public class MyHashTableImp2<K,V> implements MyHashTable<K,V> {
         MyHashLinkedListImp<K,V> bucket = table[index];
         if (bucket.getKey(key) != null) {
             bucket.getKey(key).setValue(value);
-            return;
             //si ya existe modifica el valor
+        } else {
+            bucket.add(new NodeHash<>(key, value));
         }
-        bucket.add(new NodeHash<>(key,value));
     }
 
     @Override
