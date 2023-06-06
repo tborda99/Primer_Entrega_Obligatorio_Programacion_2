@@ -34,9 +34,10 @@ public class MyStackImp<T> implements MyStack<T> {
     //metodos
     @Override
     public void push(T value) {
-        if (this.first == null){
+        if (this.first == null) {
             this.first = new Node<>(value);
-        }else {
+            this.last = new Node<>(value);
+        } else {
             Node<T> aux = this.first;
             this.first = new Node<>(value);
             this.first.setNext(aux);

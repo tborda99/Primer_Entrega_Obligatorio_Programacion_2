@@ -3,16 +3,17 @@ package MyTADS.Tests;
 
 import MyTADS.Exceptions.EmptyStackException;
 import MyTADS.Interfaces.MyStack;
-import MyTADS.Entities.MyLinkedListImp;
+import MyTADS.Entities.MyStackImp;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class MyStackTest {
 
+    MyStack<Integer> stack = new MyStackImp<>();
+
     @Test
     public void push() {
-        MyStack<Integer> stack = new MyLinkedListImp<>();
         stack.push(1);
         stack.push(2);
         stack.push(3);
@@ -21,7 +22,6 @@ public class MyStackTest {
 
     @Test
     public void pop() throws EmptyStackException {
-        MyStack<Integer> stack = new MyLinkedListImp<>();
         stack.push(1);
         stack.push(2);
         stack.push(3);
@@ -32,7 +32,6 @@ public class MyStackTest {
 
     @Test
     public void peek() throws EmptyStackException {
-        MyStack<Integer> stack = new MyLinkedListImp<>();
         stack.push(1);
         stack.push(2);
         stack.push(3);

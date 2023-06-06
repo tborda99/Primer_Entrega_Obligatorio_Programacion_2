@@ -8,7 +8,7 @@ import MyTADS.Interfaces.MyQueue;
 import MyTADS.Interfaces.MyStack;
 import MyTADS.Entities.Node;
 
-public class MyLinkedListImp <T> implements MyList<T>, MyQueue<T>, MyStack<T> {
+public class MyLinkedListImp <T> implements MyList<T> {
 
     private Node<T> first;
     private Node<T> last;
@@ -127,84 +127,6 @@ public class MyLinkedListImp <T> implements MyList<T>, MyQueue<T>, MyStack<T> {
             }
         }
         return count;
-    }
-
-////////////////////////////////
-    //METHODS DE QUEUE
-////////////////////////////////
-    @Override
-    public void enqueue(T value) {
-        Node<T> agregar = new Node<T>(value);
-        if(this.first == null){
-            this.first = agregar;
-            this.last = agregar;
-        }else{
-            Node<T> aux = this.first;
-            while(aux.getNext()!= null){
-                aux = aux.getNext();
-            }
-            aux.setNext(agregar);
-            this.last = agregar;
-        }
-    }
-
-    @Override
-    public T dequeue() throws EmptyQueueException {
-        if(this.first == null){
-            throw new EmptyQueueException();
-        }else{
-            Node<T> to_return = null;
-            if(this.first.getNext() != null){
-                to_return = this.first;
-                this.first = this.first.getNext();
-            }else{
-                to_return = this.first;
-                this.first=null;
-                }
-            return to_return.getValue();
-        }
-    }
-
-////////////////////////////////
-    //METHODS DE STACK
-///////////////////////////////
-    @Override
-    public void push(T value) {
-        if (this.first == null){
-            this.first = new Node<>(value);
-        }else{
-            Node <T> aux = this.first;
-            this.first = new Node<>(value);
-            this.first.setNext(aux);
-
-        }
-
-    }
-
-    @Override
-    public T pop() throws EmptyStackException {
-        if(this.first == null){
-            throw new EmptyStackException();
-        }else if(this.first.getNext() !=null){
-            //Caso en el que hay más de uno
-            Node <T> to_return = this.first;
-            this.first = this.first.getNext();
-            return to_return.getValue();
-        }else{
-            //Caso en el que hay solo uno
-            Node <T> to_return = this.first;
-            this.first = null;
-            return to_return.getValue();
-        }
-    }
-
-    @Override
-    public T peek() {
-        if(this.first == null){
-            return null;
-        }else {
-            return this.first.getValue();
-        }
     }
 
 /////////////////////////////////////

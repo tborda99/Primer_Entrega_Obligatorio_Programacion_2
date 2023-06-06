@@ -1,17 +1,18 @@
 package MyTADS.Tests;
 
 import MyTADS.Exceptions.EmptyQueueException;
-import MyTADS.Interfaces.MyQueue;
-import MyTADS.Entities.MyLinkedListImp;
+import MyTADS.Entities.MyQueueImp;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class MyQueueTest {
 
+    MyQueueImp<String> queue = new MyQueueImp<>();
+
     @Test
     public void enqueue() {
-        MyQueue<String> queue = new MyLinkedListImp<>();
+
 
         // Enqueue elements
         queue.enqueue("Apple");
@@ -24,7 +25,6 @@ public class MyQueueTest {
 
     @Test
     public void dequeue() throws EmptyQueueException {
-        MyQueue<String> queue = new MyLinkedListImp<>();
 
         // Enqueue elements
         queue.enqueue("Apple");

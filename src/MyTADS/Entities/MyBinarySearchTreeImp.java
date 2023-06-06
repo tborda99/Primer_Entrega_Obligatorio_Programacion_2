@@ -84,7 +84,7 @@ public class MyBinarySearchTreeImp <K extends Comparable<K>, T> implements MyBin
 
                         } else {
                             //Caso con dos hijos
-                            MyQueue<NodeBST> queue = new MyLinkedListImp<>();
+                            MyQueue<NodeBST> queue = new MyQueueImp<>();
                             queue = inOrder(eliminar, queue);
 
                             //Borro el que quiero eliminar, setteando el hijo de su padre a null.
