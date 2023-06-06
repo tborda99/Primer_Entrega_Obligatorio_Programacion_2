@@ -58,6 +58,17 @@ public class MyHashLinkedListImp<K,V> implements MyList<NodeHash<K,V>> {
         //throw new OutOfBoundsException();
     }
 
+    public NodeHash<K,V> getKey(K key){
+        NodeHash<K,V> aux = first;
+        while (aux.getKey() != key && aux != null) {
+            aux = aux.getNext();
+        }
+        if (aux.getKey() == key) {
+            return aux;
+        }
+        return null;
+    }
+
     @Override
     public boolean contains(NodeHash<K, V> node) {
         if (node != null && first != null) {

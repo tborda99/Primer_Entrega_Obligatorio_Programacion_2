@@ -35,6 +35,15 @@ class MyHashLinkedListImpTest {
     }
 
     @Test
+    void getKey() {
+        hashLinkedList.add(nodo1);
+        hashLinkedList.add(nodo2);
+        hashLinkedList.add(nodo3);
+        assertEquals(nodo1, hashLinkedList.getKey(1));
+        assertEquals(nodo2, hashLinkedList.getKey(2));
+        assertEquals(nodo3, hashLinkedList.getKey(3));
+    }
+    @Test
     void contains() {
         hashLinkedList.add(nodo1);
         hashLinkedList.add(nodo2);
